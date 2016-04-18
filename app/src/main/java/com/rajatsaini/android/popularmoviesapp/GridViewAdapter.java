@@ -65,7 +65,7 @@ public class GridViewAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        Picasso.with(context).load("http://image.tmdb.org/t/p/w342/" + mylist.get(i)).placeholder(R.drawable.placeholder).into(viewHolder.image, new Callback() {
+        Picasso.with(context).load("http://image.tmdb.org/t/p/w342/" + mylist.get(i)).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(viewHolder.image, new Callback() {
             @Override
             public void onSuccess() {
                 Animation animation = AnimationUtils.loadAnimation(context, R.anim.fade);

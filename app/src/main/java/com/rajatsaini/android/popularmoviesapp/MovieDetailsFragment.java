@@ -60,7 +60,7 @@ public class MovieDetailsFragment extends Fragment {
 
         final ImageView image = (ImageView) view.findViewById(R.id.fragment_image);
         image.setAdjustViewBounds(true);
-        Picasso.with(context).load("http://image.tmdb.org/t/p/w342/"+movieObject.moview_poster_url).placeholder(R.drawable.placeholder).into(image, new Callback() {
+        Picasso.with(context).load("http://image.tmdb.org/t/p/w342/" + movieObject.moview_poster_url).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(image, new Callback() {
             @Override
             public void onSuccess() {
                 Animation animation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade);

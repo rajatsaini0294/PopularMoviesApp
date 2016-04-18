@@ -9,6 +9,6 @@
     android:focusable="true"
     android:gravity="center"
     android:horizontalSpacing="2dp"
-    android:numColumns="2"
+    android:numColumns="auto_fit"
     android:stretchMode="columnWidth"
     android:verticalSpacing="2dp" />

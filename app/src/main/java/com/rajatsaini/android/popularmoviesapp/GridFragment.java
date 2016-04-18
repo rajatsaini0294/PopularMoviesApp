@@ -67,7 +67,6 @@ public class GridFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        Toast.makeText(getActivity().getApplicationContext(), "asgfsdfg", Toast.LENGTH_SHORT).show();
         return gridView;
     }
 

@@ -3,6 +3,8 @@ package com.rajatsaini.android.popularmoviesapp;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,10 +31,10 @@ import java.util.ArrayList;
  */
 public class GridFragment extends Fragment {
     public static ArrayList<String> mylist = new ArrayList<String>();
-    public ArrayList<MovieDataPOJO> pojoList;// = new ArrayList<MovieDataPOJO>();
+    public static ArrayList<MovieDataPOJO> pojoList;// = new ArrayList<MovieDataPOJO>();
     private RequestQueue requestQueue;
     View view;
-    GridViewAdapter adapter;
+    public static GridViewAdapter adapter;
     GridView gridView;
     public static String sortOrder = "popularity.desc";
     public static String params = "";
@@ -40,6 +42,7 @@ public class GridFragment extends Fragment {
 
     public GridFragment() {
         context = this;
+        //Toast.makeText(getActivity().getApplicationContext(), "Grid", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -49,6 +52,7 @@ public class GridFragment extends Fragment {
         pojoList = new ArrayList<MovieDataPOJO>();
         requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         adapter = new GridViewAdapter(getActivity().getApplicationContext(), mylist);
+
         gridView.setAdapter(adapter);
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             gridView.setNumColumns(3);
@@ -62,6 +66,13 @@ public class GridFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                DatabaseHelper dbHelper = new DatabaseHelper(getActivity().getApplicationContext());
+                String countQuery = "SELECT  * FROM " + Constants.TABLE_NAME;
+                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                Cursor cursor = db.rawQuery(countQuery, null);
+                int cnt = cursor.getCount();
+                cursor.close();
+                Toast.makeText(getActivity().getApplicationContext(), cnt + "", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), MovieDetailsActivity.class);
                 intent.putExtra("POJO_OBJECT", pojoList.get(i));
                 startActivity(intent);
@@ -70,7 +81,7 @@ public class GridFragment extends Fragment {
         return gridView;
     }
 
-    private void invalidateData() {
+    public static void invalidateData() {
         pojoList.clear();
         mylist.clear();
     }
@@ -94,6 +105,7 @@ public class GridFragment extends Fragment {
                         movieData.setMovie_rating(jsonObject.getDouble("vote_average"));
                         movieData.setMovie_release_date(jsonObject.getString("release_date"));
                         movieData.setMovie_popularity(jsonObject.getDouble("popularity"));
+                        movieData.setMovie_backdrop_url(jsonObject.getString("backdrop_path"));
                         pojoList.add(movieData);
 
                         mylist.add("http://image.tmdb.org/t/p/w342/" + jsonObject.getString("poster_path"));
@@ -128,7 +140,50 @@ public class GridFragment extends Fragment {
     public void GridViewInterface() {
         pojoList.clear();
         mylist.clear();
-        fetchData(sortOrder, params);
+        if(!sortOrder.equals("fav")) {
+            fetchData(sortOrder, params);
+        }else{
+            Toast.makeText(getActivity().getApplicationContext(), GridFragment.sortOrder+"......", Toast.LENGTH_SHORT).show();
+            fetchFavouriteData();
+        }
         adapter.notifyDataSetChanged();
+    }
+
+    private void fetchFavouriteData() {
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity().getApplicationContext());
+        SQLiteDatabase sqLiteDatabase = databaseHelper.getReadableDatabase();
+        String query = "SELECT * FROM "+ Constants.TABLE_NAME;
+        /*
+        boolean chk = databaseHelper.checkDataBase();
+        Toast.makeText(getActivity().getApplicationContext(), chk+"......", Toast.LENGTH_SHORT).show();
+        String countQuery = "SELECT  * FROM " + Constants.TABLE_NAME;
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+        Cursor cursor1 = db.rawQuery(countQuery, null);
+        int cnt = cursor1.getCount();
+        cursor1.close();
+        Toast.makeText(getActivity().getApplicationContext(), cnt+".....", Toast.LENGTH_SHORT).show();
+        */
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        if(cursor!=null) {
+            if(cursor.getCount()>0) {
+                cursor.moveToFirst();
+                do {
+                    MovieDataPOJO movieDataPOJO = new MovieDataPOJO();
+                    movieDataPOJO.setMovie_id(cursor.getInt(0));
+                    movieDataPOJO.setMovie_title(cursor.getString(1));
+                    movieDataPOJO.setMovie_release_date(cursor.getString(2));
+                    movieDataPOJO.setMovie_rating(cursor.getDouble(3));
+                    movieDataPOJO.setMovie_popularity(cursor.getDouble(4));
+                    movieDataPOJO.setMovie_overview(cursor.getString(6));
+                    movieDataPOJO.setMoview_poster_url(cursor.getString(7));
+                    movieDataPOJO.setMovie_backdrop_url(cursor.getString(8));
+
+                    pojoList.add(movieDataPOJO);
+                    mylist.add("http://image.tmdb.org/t/p/w342/" + cursor.getString(7));
+                }
+                while (cursor.moveToNext());
+            }
+        }
+        cursor.close();
     }
 }

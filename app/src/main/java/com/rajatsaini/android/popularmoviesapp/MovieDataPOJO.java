@@ -14,9 +14,14 @@ public class MovieDataPOJO implements Parcelable{
     public String movie_overview;
     public String moview_poster_url;
     public int movie_id;
+    public String movie_backdrop_url;
 
     public MovieDataPOJO() {
 
+    }
+
+    public void setMovie_backdrop_url(String movie_backdrop_url) {
+        this.movie_backdrop_url = movie_backdrop_url;
     }
 
     public void setMovie_title(String movie_title) {
@@ -59,6 +64,7 @@ public class MovieDataPOJO implements Parcelable{
         movie_release_date = in.readString();
         moview_poster_url = in.readString();
         movie_id = in.readInt();
+        movie_backdrop_url = in.readString();
     }
 
     @Override
@@ -70,6 +76,7 @@ public class MovieDataPOJO implements Parcelable{
         parcel.writeString(movie_release_date);
         parcel.writeString(moview_poster_url);
         parcel.writeInt(movie_id);
+        parcel.writeString(movie_backdrop_url);
     }
 
     public static final Parcelable.Creator<MovieDataPOJO> CREATOR = new Parcelable.Creator<MovieDataPOJO>() {

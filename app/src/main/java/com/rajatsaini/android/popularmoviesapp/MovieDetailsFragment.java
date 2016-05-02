@@ -2,15 +2,20 @@ package com.rajatsaini.android.popularmoviesapp;
 
 
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -27,9 +32,8 @@ import java.text.SimpleDateFormat;
 public class MovieDetailsFragment extends Fragment {
     private static final String PARAM1 = "POJO_OBJECT";
     private MovieDataPOJO movieObject;
-    private String mParam2;
     public static Context context;
-
+    DatabaseHelper mydbhelper;
     public MovieDetailsFragment() {
 
     }
@@ -66,6 +70,7 @@ public class MovieDetailsFragment extends Fragment {
                 Animation animation = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade);
                 image.setAnimation(animation);
             }
+
             @Override
             public void onError() {
 
@@ -76,10 +81,43 @@ public class MovieDetailsFragment extends Fragment {
         releaseDate.setText(dateFormat(movieObject.movie_release_date));
 
         TextView rating = (TextView) view.findViewById(R.id.rating);
-        rating.setText("Rating: "+ movieObject.movie_rating+"/10");
+        rating.setText("Rating: " + movieObject.movie_rating + "/10");
 
         TextView synopsis = (TextView) view.findViewById(R.id.overview);
         synopsis.setText(movieObject.movie_overview);
+
+        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+        if(GridFragment.sortOrder.equals("fav")){
+            checkBox.setChecked(true);
+        }
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mydbhelper = new DatabaseHelper(getActivity().getApplicationContext());
+                SQLiteDatabase sqLiteDatabase = mydbhelper.getWritableDatabase();
+                if (b){
+                    ContentValues values = new ContentValues();
+                    values.put("id", movieObject.movie_id+"");
+                    values.put("name", movieObject.movie_title);
+                    values.put("releaseDate", movieObject.movie_release_date);
+                    values.put("rating", movieObject.movie_rating+"");
+                    values.put("isFavourite", true);
+                    values.put("popularity", movieObject.movie_popularity+"");
+                    values.put("synopsis", movieObject.movie_overview);
+                    values.put("imagePath", movieObject.moview_poster_url);
+                    values.put("backdrop", movieObject.movie_backdrop_url);
+                    sqLiteDatabase.insert(Constants.TABLE_NAME, null, values);
+                    Toast.makeText(getActivity().getApplicationContext(), "Added as Favourite",Toast.LENGTH_SHORT).show();
+                }else{
+                    String query  = "DELETE FROM "+Constants.TABLE_NAME+" where id = "+movieObject.movie_id;
+                    sqLiteDatabase.execSQL(query);
+                    Toast.makeText(getActivity().getApplicationContext(), "Removed as Favourite",Toast.LENGTH_SHORT).show();
+
+
+                }
+            }
+        });
+
         return view;
     }
 
@@ -98,4 +136,23 @@ public class MovieDetailsFragment extends Fragment {
         String newDateStr = postFormater.format(date);
         return newDateStr;
     }
+
+    public String tableQuery(){
+        String query = "CREATE TABLE "+ movieObject.movie_title+" ( ";
+        return query;
+    }
+
+    /*
+    public void onBackPressed(){
+        String countQuery = "SELECT  * FROM " + Constants.TABLE_NAME;
+        SQLiteDatabase db = mydbhelper.getReadableDatabase();
+        Cursor cursor1 = db.rawQuery(countQuery, null);
+        if(cursor1.getCount()<=0){
+            GridFragment.pojoList.clear();
+            GridFragment.mylist.clear();
+
+        }
+        cursor1.close();
+    }
+    */
 }

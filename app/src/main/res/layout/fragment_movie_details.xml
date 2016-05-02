@@ -56,7 +56,21 @@
                     android:fontFamily="sans-serif-medium"
                     android:paddingLeft="2dp"
                     android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:textSize="16sp"
+                    />
+                <CheckBox
+                    android:id="@+id/checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@android:drawable/btn_star"
+                    android:layout_below="@id/rating"
+                    android:layout_toRightOf="@id/fragment_image"
+                    android:background="#fff"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingLeft="2dp"
+                    android:textSize="16sp"
+                    android:text="Favourite"
                     />
             </RelativeLayout>
 

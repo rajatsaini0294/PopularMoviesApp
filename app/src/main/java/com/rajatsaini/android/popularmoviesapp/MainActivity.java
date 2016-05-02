@@ -1,10 +1,14 @@
 package com.rajatsaini.android.popularmoviesapp;
 
+import android.database.SQLException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -12,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        checkDatabase();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -40,9 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
         GridFragment frag = GridFragment.context;
 
@@ -55,8 +59,33 @@ public class MainActivity extends AppCompatActivity {
             GridFragment.sortOrder = "vote_average.desc";
             GridFragment.params = "vote_count.gte=50&include_video=false";
             frag.GridViewInterface();
+        } else if (id == R.id.action_my_favourites) {
+            item.setChecked(true);
+            GridFragment.sortOrder = "fav";
+            GridFragment.params = "";
+            frag.GridViewInterface();
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void checkDatabase() {
+        DatabaseHelper myDbHelper = new DatabaseHelper(getApplicationContext());
+        try {
+            myDbHelper.createDataBase();
+        } catch (IOException ioe) {
+            throw new Error("Unable to create database");
+        }
+        try {
+            myDbHelper.openDataBase();
+        } catch (SQLException sqle) {
+            throw sqle;
+        }
+        myDbHelper.close();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Toast.makeText(this, "Restored" , Toast.LENGTH_SHORT).show();
+    }
 }

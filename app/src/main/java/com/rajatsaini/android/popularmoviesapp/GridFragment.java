@@ -1,6 +1,7 @@
 package com.rajatsaini.android.popularmoviesapp;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -39,12 +41,24 @@ public class GridFragment extends Fragment {
     public static String sortOrder = "popularity.desc";
     public static String params = "";
     public static GridFragment context;
+    public boolean isDualPane = false;
+    public int gridPos = -1;
 
     public GridFragment() {
         context = this;
         //Toast.makeText(getActivity().getApplicationContext(), "Grid", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        isDualPane = getPaneLayout();
+    }
+
+    private boolean getPaneLayout() {
+        boolean isdualPAne = getActivity().findViewById(R.id.detailContainer) != null;
+        return isdualPAne;
+    }
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -66,16 +80,23 @@ public class GridFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                DatabaseHelper dbHelper = new DatabaseHelper(getActivity().getApplicationContext());
-                String countQuery = "SELECT  * FROM " + Constants.TABLE_NAME;
-                SQLiteDatabase db = dbHelper.getReadableDatabase();
-                Cursor cursor = db.rawQuery(countQuery, null);
-                int cnt = cursor.getCount();
-                cursor.close();
-                Toast.makeText(getActivity().getApplicationContext(), cnt + "", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getActivity(), MovieDetailsActivity.class);
-                intent.putExtra("POJO_OBJECT", pojoList.get(i));
-                startActivity(intent);
+                if(isDualPane){
+                    FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
+                    MovieDetailsFragment frag = MovieDetailsFragment.newInstance(pojoList.get(i));
+                    ft.replace(R.id.detailContainer, frag);
+                    ft.commit();
+                }else {
+                    DatabaseHelper dbHelper = new DatabaseHelper(getActivity().getApplicationContext());
+                    String countQuery = "SELECT  * FROM " + Constants.TABLE_NAME;
+                    SQLiteDatabase db = dbHelper.getReadableDatabase();
+                    Cursor cursor = db.rawQuery(countQuery, null);
+                    int cnt = cursor.getCount();
+                    cursor.close();
+                    Toast.makeText(getActivity().getApplicationContext(), cnt + "", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(), MovieDetailsActivity.class);
+                    intent.putExtra("POJO_OBJECT", pojoList.get(i));
+                    startActivity(intent);
+                }
             }
         });
         return gridView;
@@ -118,6 +139,9 @@ public class GridFragment extends Fragment {
                     @Override
                     public void run() {
                         gridView.setAdapter(adapter);
+                        if (gridPos > -1)
+                            gridView.setSelection(gridPos);
+                        gridPos = -1;
                     }
                 });
             }
@@ -186,4 +210,27 @@ public class GridFragment extends Fragment {
         }
         cursor.close();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("GRIDVIEW_POSITION", gridView.getFirstVisiblePosition());
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+            gridPos = savedInstanceState.getInt("GRIDVIEW_POSITION");
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        requestQueue.cancelAll(new RequestQueue.RequestFilter() {
+            @Override
+            public boolean apply(Request<?> request) {
+                return true;
+            }
+        });
+    }
+
 }

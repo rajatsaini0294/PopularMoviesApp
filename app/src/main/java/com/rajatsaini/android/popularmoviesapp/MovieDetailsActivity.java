@@ -9,11 +9,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.support.v7.widget.Toolbar;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;

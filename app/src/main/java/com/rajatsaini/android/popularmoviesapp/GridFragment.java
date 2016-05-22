@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,9 +34,8 @@ import java.util.ArrayList;
  */
 public class GridFragment extends Fragment {
     public static ArrayList<String> mylist = new ArrayList<String>();
-    public static ArrayList<MovieDataPOJO> pojoList;// = new ArrayList<MovieDataPOJO>();
+    public static ArrayList<MovieDataPOJO> pojoList;
     private RequestQueue requestQueue;
-    View view;
     public static GridViewAdapter adapter;
     GridView gridView;
     public static String sortOrder = "popularity.desc";
@@ -46,7 +46,6 @@ public class GridFragment extends Fragment {
 
     public GridFragment() {
         context = this;
-        //Toast.makeText(getActivity().getApplicationContext(), "Grid", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -57,8 +56,10 @@ public class GridFragment extends Fragment {
 
     private boolean getPaneLayout() {
         boolean isdualPAne = getActivity().findViewById(R.id.detailContainer) != null;
+        Toast.makeText(getActivity(), isdualPAne + "......", Toast.LENGTH_SHORT).show();
         return isdualPAne;
     }
+
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -77,15 +78,16 @@ public class GridFragment extends Fragment {
 
         }
         fetchData(sortOrder, params);
+        scheduleRoutine1();
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(isDualPane){
+                if (isDualPane) {
                     FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
                     MovieDetailsFragment frag = MovieDetailsFragment.newInstance(pojoList.get(i));
                     ft.replace(R.id.detailContainer, frag);
                     ft.commit();
-                }else {
+                } else {
                     DatabaseHelper dbHelper = new DatabaseHelper(getActivity().getApplicationContext());
                     String countQuery = "SELECT  * FROM " + Constants.TABLE_NAME;
                     SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -102,6 +104,20 @@ public class GridFragment extends Fragment {
         return gridView;
     }
 
+    public void scheduleRoutine1() {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isDualPane) {
+                    FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
+                    MovieDetailsFragment frag = MovieDetailsFragment.newInstance(pojoList.get(0));
+                    ft.replace(R.id.detailContainer, frag);
+                    ft.commit();
+                }
+            }
+        }, 500);
+    }
     public static void invalidateData() {
         pojoList.clear();
         mylist.clear();
@@ -164,10 +180,10 @@ public class GridFragment extends Fragment {
     public void GridViewInterface() {
         pojoList.clear();
         mylist.clear();
-        if(!sortOrder.equals("fav")) {
+        if (!sortOrder.equals("fav")) {
             fetchData(sortOrder, params);
-        }else{
-            Toast.makeText(getActivity().getApplicationContext(), GridFragment.sortOrder+"......", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(), GridFragment.sortOrder + "......", Toast.LENGTH_SHORT).show();
             fetchFavouriteData();
         }
         adapter.notifyDataSetChanged();
@@ -176,20 +192,11 @@ public class GridFragment extends Fragment {
     private void fetchFavouriteData() {
         DatabaseHelper databaseHelper = new DatabaseHelper(getActivity().getApplicationContext());
         SQLiteDatabase sqLiteDatabase = databaseHelper.getReadableDatabase();
-        String query = "SELECT * FROM "+ Constants.TABLE_NAME;
-        /*
-        boolean chk = databaseHelper.checkDataBase();
-        Toast.makeText(getActivity().getApplicationContext(), chk+"......", Toast.LENGTH_SHORT).show();
-        String countQuery = "SELECT  * FROM " + Constants.TABLE_NAME;
-        SQLiteDatabase db = databaseHelper.getReadableDatabase();
-        Cursor cursor1 = db.rawQuery(countQuery, null);
-        int cnt = cursor1.getCount();
-        cursor1.close();
-        Toast.makeText(getActivity().getApplicationContext(), cnt+".....", Toast.LENGTH_SHORT).show();
-        */
+        String query = "SELECT * FROM " + Constants.TABLE_NAME;
+
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
-        if(cursor!=null) {
-            if(cursor.getCount()>0) {
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
                     MovieDataPOJO movieDataPOJO = new MovieDataPOJO();
@@ -216,12 +223,14 @@ public class GridFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putInt("GRIDVIEW_POSITION", gridView.getFirstVisiblePosition());
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null)
             gridPos = savedInstanceState.getInt("GRIDVIEW_POSITION");
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -232,5 +241,4 @@ public class GridFragment extends Fragment {
             }
         });
     }
-
 }

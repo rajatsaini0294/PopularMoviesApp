@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -38,11 +39,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MovieDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MovieDetailsFragment extends Fragment {
     private static final String PARAM1 = "POJO_OBJECT";
     private MovieDataPOJO movieObject;
@@ -291,5 +287,15 @@ public class MovieDetailsFragment extends Fragment {
         } catch (ActivityNotFoundException ex) {
 
         }
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
+            @Override
+            public boolean apply(Request<?> request) {
+                return true;
+            }
+        });
     }
 }

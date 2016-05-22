@@ -56,7 +56,6 @@ public class GridFragment extends Fragment {
 
     private boolean getPaneLayout() {
         boolean isdualPAne = getActivity().findViewById(R.id.detailContainer) != null;
-        Toast.makeText(getActivity(), isdualPAne + "......", Toast.LENGTH_SHORT).show();
         return isdualPAne;
     }
 
@@ -94,7 +93,6 @@ public class GridFragment extends Fragment {
                     Cursor cursor = db.rawQuery(countQuery, null);
                     int cnt = cursor.getCount();
                     cursor.close();
-                    Toast.makeText(getActivity().getApplicationContext(), cnt + "", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), MovieDetailsActivity.class);
                     intent.putExtra("POJO_OBJECT", pojoList.get(i));
                     startActivity(intent);
@@ -183,7 +181,6 @@ public class GridFragment extends Fragment {
         if (!sortOrder.equals("fav")) {
             fetchData(sortOrder, params);
         } else {
-            Toast.makeText(getActivity().getApplicationContext(), GridFragment.sortOrder + "......", Toast.LENGTH_SHORT).show();
             fetchFavouriteData();
         }
         adapter.notifyDataSetChanged();

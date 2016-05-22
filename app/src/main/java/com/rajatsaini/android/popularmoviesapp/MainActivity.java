@@ -86,6 +86,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        Toast.makeText(this, "Restored" , Toast.LENGTH_SHORT).show();
     }
 }

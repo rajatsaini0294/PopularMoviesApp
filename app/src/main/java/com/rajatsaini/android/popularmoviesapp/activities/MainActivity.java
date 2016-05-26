@@ -1,4 +1,4 @@
-package com.rajatsaini.android.popularmoviesapp;
+package com.rajatsaini.android.popularmoviesapp.activities;
 
 import android.database.SQLException;
 import android.os.Bundle;
@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+
+import com.rajatsaini.android.popularmoviesapp.R;
+import com.rajatsaini.android.popularmoviesapp.provider.DatabaseHelper;
+import com.rajatsaini.android.popularmoviesapp.fragments.GridFragment;
 
 import java.io.IOException;
 
@@ -32,11 +35,11 @@ public class MainActivity extends AppCompatActivity {
         MenuItem popularity = menu.findItem(R.id.action_sort_by_popularity);
         MenuItem rating = menu.findItem(R.id.action_sort_by_rating);
 
-        if ((GridFragment.sortOrder).contentEquals("popularity.desc")) {
+        if ((GridFragment.sortOrder).contentEquals("popular")) {
             if (!popularity.isChecked()) {
                 popularity.setChecked(true);
             }
-        } else if ((GridFragment.sortOrder).contentEquals("vote_average.desc")) {
+        } else if ((GridFragment.sortOrder).contentEquals("top_rated")) {
             if (!rating.isChecked()) {
                 rating.setChecked(true);
             }
@@ -50,14 +53,17 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         GridFragment frag = GridFragment.context;
 
+        if(id == R.id.action_refresh){
+            frag.refreshData();
+        }
         if (id == R.id.action_sort_by_popularity) {
             item.setChecked(true);
-            GridFragment.sortOrder = "popularity.desc";
+            GridFragment.sortOrder = "popular";
             frag.GridViewInterface();
         } else if (id == R.id.action_sort_by_rating) {
             item.setChecked(true);
-            GridFragment.sortOrder = "vote_average.desc";
-            GridFragment.params = "vote_count.gte=50&include_video=false";
+            GridFragment.sortOrder = "top_rated";
+            //GridFragment.params = "vote_count.gte=50&include_video=false";
             frag.GridViewInterface();
         } else if (id == R.id.action_my_favourites) {
             item.setChecked(true);

@@ -1,4 +1,4 @@
-package com.rajatsaini.android.popularmoviesapp;
+package com.rajatsaini.android.popularmoviesapp.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

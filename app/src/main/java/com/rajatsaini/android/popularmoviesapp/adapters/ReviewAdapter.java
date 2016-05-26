@@ -1,4 +1,4 @@
-package com.rajatsaini.android.popularmoviesapp;
+package com.rajatsaini.android.popularmoviesapp.adapters;
 
 import android.content.Context;
 import android.view.View;
@@ -6,17 +6,21 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.rajatsaini.android.popularmoviesapp.R;
+import com.rajatsaini.android.popularmoviesapp.models.ReviewPOJO;
+
 import java.util.ArrayList;
 
 /**
  * Created by rajat on 5/8/2016.
  */
 public class ReviewAdapter extends BaseAdapter{
-    public ArrayList<ReviewPOJO> reviews = new ArrayList<ReviewPOJO>();
+    public ArrayList<ReviewPOJO> reviews ;
     Context mContext;
 
     public ReviewAdapter(Context context) {
         mContext = context;
+        reviews = new ArrayList<ReviewPOJO>();;
     }
 
     @Override
@@ -54,5 +58,12 @@ public class ReviewAdapter extends BaseAdapter{
 
     public void addReview(ReviewPOJO review) {
         reviews.add(review);
+    }
+    public void addAllReview(ArrayList<ReviewPOJO> list){
+        reviews.clear();
+        ArrayList<ReviewPOJO> list1 = new ArrayList<ReviewPOJO>();
+        reviews = list;
+        //Toast.makeText(mContext, reviews.size() + "..reviews in adapter", Toast.LENGTH_SHORT).show();
+
     }
 }

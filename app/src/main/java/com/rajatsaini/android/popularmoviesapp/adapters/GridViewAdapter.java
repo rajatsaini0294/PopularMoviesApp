@@ -1,4 +1,4 @@
-package com.rajatsaini.android.popularmoviesapp;
+package com.rajatsaini.android.popularmoviesapp.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.rajatsaini.android.popularmoviesapp.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -65,7 +66,8 @@ public class GridViewAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        Picasso.with(context).load("http://image.tmdb.org/t/p/w342/" + mylist.get(i)).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(viewHolder.image, new Callback() {
+       // Toast.makeText(context, mylist.get(0), Toast.LENGTH_SHORT).show();
+        Picasso.with(context).load(mylist.get(i)).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(viewHolder.image, new Callback() {
             @Override
             public void onSuccess() {
                 Animation animation = AnimationUtils.loadAnimation(context, R.anim.fade);

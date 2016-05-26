@@ -1,4 +1,4 @@
-package com.rajatsaini.android.popularmoviesapp;
+package com.rajatsaini.android.popularmoviesapp.activities;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -15,11 +15,18 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.rajatsaini.android.popularmoviesapp.Constants;
+import com.rajatsaini.android.popularmoviesapp.R;
+import com.rajatsaini.android.popularmoviesapp.provider.DatabaseHelper;
+import com.rajatsaini.android.popularmoviesapp.fragments.GridFragment;
+import com.rajatsaini.android.popularmoviesapp.fragments.MovieDetailsFragment;
+import com.rajatsaini.android.popularmoviesapp.models.MovieDataPOJO;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     public static MovieDataPOJO pojo;
+    private int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +45,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         });
 
         pojo = getIntent().getParcelableExtra("POJO_OBJECT");
+        position = getIntent().getIntExtra("POJO_POSITION", 0);
         ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout)).setTitle(pojo.movie_title);
         ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout)).setCollapsedTitleTextColor(Color.WHITE);
         ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout)).setExpandedTitleColor(Color.WHITE);
@@ -56,8 +64,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             }
         });
-
-        Fragment frag = MovieDetailsFragment.newInstance(pojo);
+        Fragment frag = MovieDetailsFragment.newInstance(pojo, position);
         FragmentManager manager = getFragmentManager();
         FragmentTransaction t = manager.beginTransaction();
         t.replace(R.id.detail_container, frag);

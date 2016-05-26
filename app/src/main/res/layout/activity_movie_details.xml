@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rajatsaini.android.popularmoviesapp.MovieDetailsActivity">
+    tools:context=".activities.MovieDetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbarlayout"
@@ -53,10 +53,10 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <FrameLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/detailContainer"
+            android:id="@+id/detail_container"
             />
 </android.support.v4.widget.NestedScrollView>
 

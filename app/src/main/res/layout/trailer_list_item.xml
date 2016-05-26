@@ -6,7 +6,7 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <com.rajatsaini.android.popularmoviesapp.SquareImageView
+    <com.rajatsaini.android.popularmoviesapp.widget.SquareImageView
         android:id="@+id/trailerImage"
         android:layout_width="150dp"
         android:layout_height="150dp"

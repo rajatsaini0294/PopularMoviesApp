@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Toast;
 
 import com.rajatsaini.android.popularmoviesapp.R;
 import com.rajatsaini.android.popularmoviesapp.fragments.MovieDetailsFragment;
@@ -67,8 +66,6 @@ public class TrailerAdapter extends BaseAdapter {
     public void addAllTrailer(ArrayList<TrailersPOJO> list){
         trailers.clear();
         trailers = list;
-        Toast.makeText(mContext, trailers.size() + "..trailers in adapter", Toast.LENGTH_SHORT).show();
-
     }
 
     public void addItem(TrailersPOJO trailer) {

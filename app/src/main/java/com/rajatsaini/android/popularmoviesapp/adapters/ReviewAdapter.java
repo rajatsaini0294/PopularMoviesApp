@@ -63,7 +63,5 @@ public class ReviewAdapter extends BaseAdapter{
         reviews.clear();
         ArrayList<ReviewPOJO> list1 = new ArrayList<ReviewPOJO>();
         reviews = list;
-        //Toast.makeText(mContext, reviews.size() + "..reviews in adapter", Toast.LENGTH_SHORT).show();
-
     }
 }

@@ -103,7 +103,7 @@ public class GridFragment extends Fragment {
             if(NetworkUtil.getConnectivityStatus(getActivity())!=NetworkUtil.TYPE_NOT_CONNECTED) {
                 fetchData(sortOrder, params);
             }else {
-                Toast.makeText(getActivity(), "Not Connected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Not Connected to Internet", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -119,7 +119,6 @@ public class GridFragment extends Fragment {
                     ft.replace(R.id.detail_Container_tablet, frag);
                     ft.commit();
                 } else {
-                    //  Toast.makeText(getActivity().getApplicationContext(), "Pane...."+isDualPane,Toast.LENGTH_SHORT).show();
                     DatabaseHelper dbHelper = new DatabaseHelper(getActivity().getApplicationContext());
                     String countQuery = "SELECT  * FROM " + Constants.TABLE_NAME;
                     SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -137,7 +136,6 @@ public class GridFragment extends Fragment {
     }
 
     public void scheduleRoutine1() {
-        Toast.makeText(getActivity(), pojoList.size()+"", Toast.LENGTH_SHORT).show();
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -158,9 +156,6 @@ public class GridFragment extends Fragment {
     }
 
     public void fetchData(String sortOrder, String params) {
-        Toast.makeText(getActivity(), "fetching data", Toast.LENGTH_SHORT).show();
-
-        //String url = "http://api.themoviedb.org/3/discover/movie?sort_by=" + sortOrder + "&" + params + "&api_key=" + Constants.API_KEY;
         String url = "http://api.themoviedb.org/3/movie/" + sortOrder + "?api_key=" + Constants.API_KEY;
         Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
             @Override
@@ -259,8 +254,6 @@ public class GridFragment extends Fragment {
         DatabaseHelper databaseHelper = new DatabaseHelper(getActivity().getApplicationContext());
         SQLiteDatabase sqLiteDatabase = databaseHelper.getReadableDatabase();
         String query = "SELECT * FROM " + Constants.TABLE_NAME;
-        Toast.makeText(getActivity(), pojoList.size()+"..tttttt.."+mylist.size(), Toast.LENGTH_SHORT).show();
-
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
         if (cursor != null) {
             if (cursor.getCount() > 0) {
@@ -280,7 +273,6 @@ public class GridFragment extends Fragment {
                 }
                 while (cursor.moveToNext());
             }
-            Toast.makeText(getActivity(), pojoList.size()+"...."+mylist.size(), Toast.LENGTH_SHORT).show();
         }
         cursor.close();
     }
@@ -288,7 +280,6 @@ public class GridFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //Toast.makeText(getActivity().getApplicationContext(), mylist.size() + "/////", Toast.LENGTH_SHORT).show();
         outState.putInt(EXTRA_GRIDVIEW_POSITION, gridView.getFirstVisiblePosition());
         outState.putStringArrayList(EXTRA_MOVIE_POSTERS, mylist);
         outState.putParcelableArrayList(EXTRA_MOVIE_OBJECTS, pojoList);

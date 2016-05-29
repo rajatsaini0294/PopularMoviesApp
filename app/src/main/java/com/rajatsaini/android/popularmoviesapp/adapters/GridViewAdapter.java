@@ -66,7 +66,6 @@ public class GridViewAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-       // Toast.makeText(context, mylist.get(0), Toast.LENGTH_SHORT).show();
         Picasso.with(context).load(mylist.get(i)).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).into(viewHolder.image, new Callback() {
             @Override
             public void onSuccess() {
